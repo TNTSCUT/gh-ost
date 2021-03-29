@@ -1250,7 +1250,10 @@ func (this *Migrator) executeWriteFuncs() error {
 						// Hmmmmm... nothing in the queue; no events, but also no row copy.
 						// This is possible upon load. Let's just sleep it over.
 						this.migrationContext.Log.Debugf("Getting nothing in the write queue. Sleeping...")
-						time.Sleep(time.Second)
+						//QPS很高的表，就算无更新，也会有问题，参考https://github.com/github/gh-ost/issues/829
+						//修改为sleep 0.1ms
+						//time.Sleep(time.Second)
+						time.Sleep(100 * time.Millisecond)
 					}
 				}
 			}
